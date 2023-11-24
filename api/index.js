@@ -16,8 +16,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log("Connected to database");
 }).catch((err) => console.log(err))
 
-app.listen(5173, () => {
-    console.log(`Server running on ${5173}`)
+app.listen(3000, () => {
+    console.log(`Server running on ${3000}`)
 })
 
 app.get('/', (request, response) => {
