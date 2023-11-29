@@ -42,6 +42,34 @@ export const signin = async (request, response, next) => {
 
 }
 
+export const googleAuth = async (request, response) => {
+    const googleAuthData = request.body;
+    try{
+        const user = await User.findOne({email:googleAuthData.email})
+        if(user) {
+            const token = jwt.sign({id:user._id}, process.env.JWT_SECRET);
+            const {password: hashPassword, ...rest } = user._doc;
+            response.cookie('access_token', token, {httpOnly: true, expires: new Date(Date.now() + 900000)}).status(200).json(rest);
+        }else {
+            const generatedPassword = Math.random().toString(36).slice(-8);
+            const hashed = hashPassword(generatedPassword);
+            const newUser = new User({
+                username: googleAuthData.name.split(" ").join("").toLowerCase() + Math.floor(Math.random() * 10000),
+                email: googleAuthData.email,
+                profileImg: googleAuthData.profileImg,
+                password: hashed
+            });
+            const result = await newUser.save();
+            const token = jwt.sign({id:result._id}, process.env.JWT_SECRET);
+            const {password: hashedPassword, ...meta } = result._doc;
+            response.cookie('access_token', token, {httpOnly: true, expires: new Date(Date.now() + 900000)}).status(200).json(meta);
+        }
+    }catch(error){
+        console.log(error)
+    }
+
+}
+
 const hashPassword = (password) => {
     const hashed = bcryptjs.hashSync(password, 10);
     return hashed;

@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    profileImg:{
+        type:String,
+        default:"https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg "
+    }
 }, 
 {
     timestamps: true
