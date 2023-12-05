@@ -2,9 +2,7 @@ import User from "../models/userModel.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs';
 
-export const test = (request, response) => {
-    response.send("Hello World from test user");
-}
+
 
 export const updateUser = async (request, response, next) => {
     if (request.user._id != request.params.id) {
