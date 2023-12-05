@@ -5,7 +5,9 @@ import bcryptjs from 'bcryptjs';
 
 
 export const updateUser = async (request, response, next) => {
-    if (request.user._id != request.params.id) {
+    console.log(request.user.id);
+    console.log(request.params.id);
+    if (request.user.id != request.params.id) {
         return next(errorHandler(401, "You can update only your account!!"));
     }
     try{
