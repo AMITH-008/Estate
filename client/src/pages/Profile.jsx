@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import {app} from '../firebase.js'
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess } from '../redux/user/userSlice.js'
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess, signOutUser } from '../redux/user/userSlice.js'
 import { useDispatch } from 'react-redux'
 
 export default function Profile() {
@@ -85,6 +85,17 @@ export default function Profile() {
     }
   }
 
+  const handleSignout = async () => {
+    try {
+      await fetch('/api/auth/signout', {
+        method:'GET'
+      });
+      dispatch(signOutUser());
+    }catch (error)  {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if(image) {
       handleFileUpload(image)
@@ -140,7 +151,7 @@ export default function Profile() {
       </form>
       <div className='flex justify-between mt-5'>
         <span onClick={handleDeleteAccount} className='text-red-500 cursor-pointer'>Delete Account</span>
-        <span className='text-red-500 cursor-pointer'>Sign Out</span>
+        <span onClick={handleSignout} className='text-red-500 cursor-pointer'>Sign Out</span>
       </div>
       <p className='text-red-700 mt-5'>{error && "Something Went Wrong!"}</p>
       <p className='text-green-700 mt-5'>{updateSuccess && "User updated successfully"}</p>
