@@ -70,6 +70,10 @@ export const googleAuth = async (request, response) => {
 
 }
 
+export const signout = (request, response) => {
+    response.clearCookie('access_token').status(200).json('Signout Success');
+}
+
 const hashPassword = (password) => {
     const hashed = bcryptjs.hashSync(password, 10);
     return hashed;
