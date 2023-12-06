@@ -39,7 +39,6 @@ export default function Profile() {
       setUpdateSuccess(true);
       dispatch(updateUserSuccess(data));
     }catch(error) {
-      console.log(error);
       dispatch(updateUserFailure(error));
     }
   }
@@ -63,7 +62,6 @@ export default function Profile() {
           ...formData,
           profileImg:dlURL
         });
-        console.log(dlURL);
     } )
   }
 
