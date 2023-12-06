@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import {app} from '../firebase.js'
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice.js'
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess } from '../redux/user/userSlice.js'
 import { useDispatch } from 'react-redux'
 
 export default function Profile() {
@@ -44,7 +44,6 @@ export default function Profile() {
     }
   }
 
-  console.log(formData);
   const handleFileUpload = async (image) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + image.name;
@@ -67,6 +66,25 @@ export default function Profile() {
         console.log(dlURL);
     } )
   }
+
+  const handleDeleteAccount = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, 
+        {
+          method:'DELETE'
+        });
+      const data = await res.json();
+      if(data.success === false ) {
+        dispatch(deleteUserFailure(data));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    }catch(err) {
+      dispatch(deleteUserFailure(err));
+    }
+  }
+
   useEffect(() => {
     if(image) {
       handleFileUpload(image)
@@ -121,7 +139,7 @@ export default function Profile() {
           <button className=' p-3 rounded-lg hover:opacity-90 font-semibold text-md bg-gradient-to-r from-blue-500 to-green-500 disabled:opacity-80'>{loading?"Loading......":"Update"}</button>
       </form>
       <div className='flex justify-between mt-5'>
-        <span className='text-red-500 cursor-pointer'>Delete Account</span>
+        <span onClick={handleDeleteAccount} className='text-red-500 cursor-pointer'>Delete Account</span>
         <span className='text-red-500 cursor-pointer'>Sign Out</span>
       </div>
       <p className='text-red-700 mt-5'>{error && "Something Went Wrong!"}</p>
